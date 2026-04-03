@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Inventory Engine - Orders Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#e8eff3",
+                    "on-secondary-container": "#505157",
+                    "on-primary": "#f8f7ff",
+                    "on-tertiary-fixed-variant": "#5b5672",
+                    "error": "#9f403d",
+                    "tertiary-container": "#e3dbfd",
+                    "surface-tint": "#0053db",
+                    "on-error-container": "#752121",
+                    "error-container": "#fe8983",
+                    "on-tertiary-fixed": "#3e3a54",
+                    "inverse-primary": "#618bff",
+                    "surface-dim": "#cfdce3",
+                    "on-secondary-fixed": "#3e3f45",
+                    "primary-fixed": "#dbe1ff",
+                    "on-surface": "#2a3439",
+                    "on-background": "#2a3439",
+                    "inverse-surface": "#0b0f10",
+                    "surface-container-low": "#f0f4f7",
+                    "on-secondary": "#f9f8ff",
+                    "tertiary-fixed-dim": "#d4cdee",
+                    "secondary-dim": "#525359",
+                    "on-error": "#fff7f6",
+                    "on-secondary-fixed-variant": "#5a5b61",
+                    "primary-dim": "#0048c1",
+                    "surface-container-high": "#e1e9ee",
+                    "secondary-fixed-dim": "#d4d4db",
+                    "secondary": "#5e5f65",
+                    "on-primary-container": "#0048bf",
+                    "outline": "#717c82",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#dbe1ff",
+                    "tertiary-fixed": "#e3dbfd",
+                    "surface-variant": "#d9e4ea",
+                    "on-tertiary-container": "#514d68",
+                    "secondary-container": "#e2e2e9",
+                    "surface": "#f7f9fb",
+                    "error-dim": "#4e0309",
+                    "on-primary-fixed": "#003798",
+                    "inverse-on-surface": "#9a9d9f",
+                    "on-tertiary": "#fcf7ff",
+                    "secondary-fixed": "#e2e2e9",
+                    "background": "#f7f9fb",
+                    "surface-container-highest": "#d9e4ea",
+                    "outline-variant": "#a9b4b9",
+                    "primary-fixed-dim": "#c7d3ff",
+                    "primary": "#0053db",
+                    "on-surface-variant": "#566166",
+                    "tertiary": "#605c78",
+                    "on-primary-fixed-variant": "#0050d4",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary-dim": "#54506b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 left-0 sticky flex flex-col bg-slate-100 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 shrink-0">
+<div class="p-6 flex flex-col gap-1">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">inventory</span>
+</div>
+<div>
+<div class="font-headline font-bold text-on-surface leading-tight">Command Center</div>
+<div class="text-xs text-on-surface-variant font-medium">v2.4.0</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400 rounded-md border-l-4 border-blue-700 dark:border-blue-400 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span>Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+<span>Shipments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Analytics</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-slate-200 dark:border-slate-800 p-3 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</aside>
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+<!-- TopNavBar (Shared Component) -->
+<header class="w-full top-0 sticky bg-slate-50 dark:bg-slate-900 flex justify-between items-center px-8 py-3 z-30 border-b border-slate-200/50 dark:border-slate-800/50">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-blue-700 dark:text-blue-400 font-headline">Inventory Engine</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-blue-700 dark:text-blue-400 border-b-2 border-blue-700 dark:border-blue-400 pb-1 font-manrope tracking-tight font-semibold" href="#">Orders</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors font-manrope tracking-tight font-semibold" href="#">Customers</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors font-manrope tracking-tight font-semibold" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary w-64 transition-all" placeholder="Search orders..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full cursor-pointer">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full cursor-pointer">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="ml-2 w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Professional headshot of a smiling middle-aged man in business attire with soft natural lighting and clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiD67r3C9QMZD89AYSj5iA_v68dnafd_TJlibftoqDn5PaoNsx7WHT_IPrPkhLAX6EbeCtTWIV0JwdJ0CI4yB4Rl-NoHIEkbZEwcey0QJjUrjoicTq5DsjgxJDJH7glWXZ7tV_Eg7-ZuN-73xy962lf64_ryUiMinJB1EnnAVAH-uGhuMrRMMQcuq7ayghDjlxT8Ywxk84mgImjSXFKocDAZpiPBpYp050Ud7-KctMEBolfNuw0wBfEYdDZ--1saqSJR8KKDqIdM8"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto p-8 space-y-8 bg-surface">
+<!-- Page Header & Key Metrics (Architectural Anchor) -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2">Orders Management</h1>
+<p class="text-on-surface-variant max-w-lg">Manage real-time inventory fulfillments, customer interactions, and processing pipelines from a single command interface.</p>
+</div>
+<div class="flex gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-primary min-w-[140px]">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Active</span>
+<span class="text-2xl font-headline font-extrabold text-primary">1,240</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-error min-w-[140px]">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Pending</span>
+<span class="text-2xl font-headline font-extrabold text-error">42</span>
+</div>
+</div>
+</div>
+<!-- Filter Console (Editorial Segment) -->
+<div class="bg-surface-container-low rounded-xl p-2 flex flex-wrap gap-1 items-center overflow-x-auto whitespace-nowrap">
+<button class="px-5 py-2 rounded-lg bg-surface-container-lowest text-primary font-semibold text-sm shadow-sm transition-all">All Orders</button>
+<button class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high font-medium text-sm transition-all">Pending</button>
+<button class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high font-medium text-sm transition-all">Confirmed</button>
+<button class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high font-medium text-sm transition-all">Processing</button>
+<button class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high font-medium text-sm transition-all">Shipped</button>
+<button class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high font-medium text-sm transition-all">Completed</button>
+<button class="px-5 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high font-medium text-sm transition-all">Cancelled</button>
+<div class="ml-auto flex gap-2 pr-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+<!-- Data Table (The Core Sheet) -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-highest/50">
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Order ID</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Customer</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Items</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Total</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y-0">
+<!-- Spacer between header and first row for No-Line rule -->
+<tr class="h-3 bg-surface"></tr>
+<!-- Row 1: Pending -->
+<tr class="group hover:bg-surface-bright transition-all">
+<td class="px-6 py-4 whitespace-nowrap relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-headline font-bold text-primary">#ORD-2849</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant text-xs font-bold">JD</div>
+<span class="font-medium">Julianne Deaton</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">4 items</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-primary-container text-on-primary-container inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Pending
+                                </span>
+</td>
+<td class="px-6 py-4 font-headline font-semibold">$592.00</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">Oct 24, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">edit</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-xl">cancel</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Confirmed -->
+<tr class="group hover:bg-surface-bright transition-all">
+<td class="px-6 py-4 whitespace-nowrap relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-headline font-bold text-primary">#ORD-2850</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of a young man with glasses smiling gently in a soft studio light setting with neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHb2Ey8qUtu8WHu6rPI6Nl5OOyyWYT27F1VxKdMU8nIOnfo8BfAfp6f60K5W3ehPsCQSOQYdlX_ftefE1hfWvRbISpW8Mr8gLWBl_xr4ILwNC9F6yMFmBrNdzmatnYMhG8yfuIVUlTuRYFb4EqomOYtxogzoHGKekdpn9Rwf5H92abZMK38_FFIlUcQu7QgrzHtVlc9XO4eqMAdhfC9K_d5Hfsx7oh_nl4babdo0EgDhD6TAQYkRcosM3LVS0hS-jxPwXDgd-FUHA"/>
+<span class="font-medium">Marcus Chambers</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">12 items</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-surface-container-high text-on-surface inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-on-surface"></span> Confirmed
+                                </span>
+</td>
+<td class="px-6 py-4 font-headline font-semibold">$1,240.45</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">Oct 24, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">edit</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-xl">cancel</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Processing -->
+<tr class="group hover:bg-surface-bright transition-all">
+<td class="px-6 py-4 whitespace-nowrap relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-headline font-bold text-primary">#ORD-2851</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container text-xs font-bold">AL</div>
+<span class="font-medium">Avery Lane</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">2 items</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-tertiary-container text-on-tertiary-container inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Processing
+                                </span>
+</td>
+<td class="px-6 py-4 font-headline font-semibold">$89.90</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">Oct 23, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">edit</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-xl">cancel</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Shipped -->
+<tr class="group hover:bg-surface-bright transition-all">
+<td class="px-6 py-4 whitespace-nowrap relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-headline font-bold text-primary">#ORD-2852</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Close-up of a young woman with natural light, bright eyes, and a neutral expression against an outdoor greenery background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaXe4IgHEi3ICbZ2ZxmGn11yfrzrI7-WGnmMYdQCEDfhGoC3gXX0GtLz8ggNnzMd58rKoO1Eb5Fu6gpWSzK2dsLrkwLNISIn_rfhGJ-u8f1EdELP8j3tAbddFr6QfDVDmvpMZVuVahErwL3aHBiUnukL0mg652neTOV3T_Gyp8Qfv57xwaZdmo5HUpbxdKS9XgmL9gNqU4tayCJ8IzIQCsNwYXcPg6YEgKYmPmhDA-hYlnj1Pl-dgJ5jYFQY8PO5hvGxNRHjGOWsg"/>
+<span class="font-medium">Elena Rodriguez</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">5 items</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span> Shipped
+                                </span>
+</td>
+<td class="px-6 py-4 font-headline font-semibold">$322.15</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">Oct 23, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">edit</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-xl">cancel</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 5: Completed -->
+<tr class="group hover:bg-surface-bright transition-all">
+<td class="px-6 py-4 whitespace-nowrap relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-headline font-bold text-primary">#ORD-2853</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-dim flex items-center justify-center text-on-surface text-xs font-bold">BS</div>
+<span class="font-medium">Bradley Smith</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">1 item</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span> Completed
+                                </span>
+</td>
+<td class="px-6 py-4 font-headline font-semibold">$45.00</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">Oct 22, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">edit</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-xl">cancel</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 6: Cancelled -->
+<tr class="group hover:bg-surface-bright transition-all">
+<td class="px-6 py-4 whitespace-nowrap relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-headline font-bold text-primary">#ORD-2854</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of a young professional man with dark hair and a confident smile, warm lighting, blurred office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyxMPIvrBpQ7Q2FcIHC_lHrlfUyJFEURqqmgyoxLMpKmlu2D8FLbqEl9HtOzAqvc84R9pXwxtj-PsR-Lq_YS8G5Qh7jNPCm5wFoYE32jZ0i7S0_Dy9W4-SCdj0y04liT119d_e95i2q_ZY1qu9gJBZ2gwfopjbD51ut-xUgDYB65wyt0fhMbjTaZorudlCv2QpNydPjHFdgznueoN_prcY-FJNrdoaycDM75qLdmlZ9VHYvQa-g4To_-Et6w2yvxv-EzR2aidytu8"/>
+<span class="font-medium">Kevin Walters</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">3 items</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-error-container text-on-error-container inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Cancelled
+                                </span>
+</td>
+<td class="px-6 py-4 font-headline font-semibold">$195.50</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">Oct 22, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">edit</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-xl">cancel</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 7: Processing -->
+<tr class="group hover:bg-surface-bright transition-all">
+<td class="px-6 py-4 whitespace-nowrap relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-headline font-bold text-primary">#ORD-2855</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed text-xs font-bold">LW</div>
+<span class="font-medium">Linda Wu</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">7 items</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-tertiary-container text-on-tertiary-container inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Processing
+                                </span>
+</td>
+<td class="px-6 py-4 font-headline font-semibold">$890.30</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">Oct 21, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">edit</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-xl">cancel</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 8: Shipped -->
+<tr class="group hover:bg-surface-bright transition-all">
+<td class="px-6 py-4 whitespace-nowrap relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-headline font-bold text-primary">#ORD-2856</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of a black professional woman with a warm, friendly expression, wearing a stylish blazer, soft overhead lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQ0acU6Po9gBoLwVL19ytTrCKBKOctpr1RbudTsdncw_KKl_xFk-WgKeDFKm_WFlJTtBfTdjcj0hmOSKJzY-HeLCG1YRZ-NLmu94YrVgSH3VbOR273ea9XCr17mqJd_m2_cHEotYwy76geF2y8nBDxy90yntZd3AXrNs6W50rEFuZkO4jp37s_MqGHf1VYMUPcijNNrqdc_VErwVSybkg1pQMyaSLfchy_tgLcH--DYgFgvAHOLy-qWVVr3BnoyJVrk9mA30hgfN4"/>
+<span class="font-medium">Sarah Jenkins</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">2 items</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span> Shipped
+                                </span>
+</td>
+<td class="px-6 py-4 font-headline font-semibold">$124.99</td>
+<td class="px-6 py-4 text-on-surface-variant text-sm">Oct 21, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">edit</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-xl">cancel</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Table Footer/Pagination -->
+<div class="px-6 py-4 bg-surface-container-low flex items-center justify-between">
+<span class="text-sm text-on-surface-variant">Showing <span class="font-semibold text-on-surface">1 - 8</span> of 1,240 orders</span>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-sm font-medium rounded border border-outline-variant/30 hover:bg-surface-container-high disabled:opacity-50" disabled="">Previous</button>
+<button class="px-3 py-1 text-sm font-medium rounded border border-outline-variant/30 hover:bg-surface-container-high">Next</button>
+</div>
+</div>
+</div>
+<!-- Bento Widgets (Complementary Actions) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-surface-container-low rounded-2xl p-6 flex items-center justify-between border border-outline-variant/10">
+<div class="space-y-2">
+<h3 class="text-lg font-bold font-headline">Bulk Order Fulfillment</h3>
+<p class="text-sm text-on-surface-variant max-w-sm">Process up to 50 pending orders simultaneously using the intelligent routing engine.</p>
+<button class="mt-4 px-6 py-2.5 bg-primary text-on-primary rounded-lg font-semibold text-sm shadow-md hover:bg-primary-dim transition-all">Start Batch Processing</button>
+</div>
+<div class="hidden sm:block w-32 h-32 opacity-20 text-primary">
+<span class="material-symbols-outlined" style="font-size: 128px;">conveyor_belt</span>
+</div>
+</div>
+<div class="bg-primary text-on-primary rounded-2xl p-6 flex flex-col justify-between shadow-xl shadow-primary/20">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-4xl">auto_awesome</span>
+<span class="text-xs font-bold bg-on-primary/20 px-2 py-1 rounded-md uppercase">AI Insights</span>
+</div>
+<div class="mt-4">
+<p class="font-headline font-bold text-xl leading-tight">Projected 15% increase in orders next week.</p>
+<p class="text-sm text-on-primary/80 mt-2">Adjust warehouse staffing levels to maintain fulfillment speed.</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- FAB (Suppressed based on context: Details/List usually don't need persistent action unless it's "Add Order") -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined" style="font-size: 32px;">add</span>
+</button>
+</body></html>
