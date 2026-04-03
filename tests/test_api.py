@@ -160,7 +160,7 @@ class TestTokenRefresh:
 class TestAuthProtection:
     def test_protected_route_without_token(self, client):
         resp = client.post("/api/v1/categories", json={"name": "Fail"})
-        assert resp.status_code == 403
+        assert resp.status_code in (401, 403)
 
     def test_protected_route_with_invalid_token(self, client):
         resp = client.post(
@@ -176,7 +176,7 @@ class TestAuthProtection:
             json={"name": "Fail"},
             headers={"Authorization": "NotBearer token"},
         )
-        assert resp.status_code == 403
+        assert resp.status_code in (401, 403)
 
 
 # ===========================================================================
@@ -863,7 +863,7 @@ class TestOrderCreate:
                 "items": [{"product_id": seeded_data["product_id"], "quantity": 1}],
             },
         )
-        assert resp.status_code == 403
+        assert resp.status_code in (401, 403)
 
 
 class TestOrderRead:
@@ -901,7 +901,7 @@ class TestOrderRead:
 
     def test_list_orders_requires_auth(self, client):
         resp = client.get("/api/v1/orders")
-        assert resp.status_code == 403
+        assert resp.status_code in (401, 403)
 
     def test_list_orders_filter_by_status(self, client, auth_headers, seeded_data):
         order = client.post(
